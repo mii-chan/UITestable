@@ -10,26 +10,13 @@ UITestable provides three macros to help with different UI testing needs:
 - `@UITestableButton`: Only applies accessibility identifiers to buttons
 - `@UITestableView`: Only applies a root view identifier
 
-## ⚠️ Important Usage Notes
+## Toolchain Requirement
 
-### Function Body Macro Limitations
+Attaching body macros to a computed property (such as `var body: some View`) currently requires a Swift toolchain from the `main-snapshot-2026-05-07` snapshot or later, selected in Xcode from Xcode > Toolchains. The requirement will go away once the support lands in a stable Swift release.
 
-Swift's Function Body Macros currently cannot be applied directly to read-only computed properties like the `body` property in SwiftUI's `View` protocol.
+## Development-Only Usage
 
-Due to this limitation, you cannot apply the UITestable macros directly to the `body` property. As a workaround, you need to:
-
-1. Create a separate function (e.g., `_body()`) with the UITestable macro
-2. Call this function from your SwiftUI view's required `body` property implementation
-
-This pattern is required for all UITestable macros.
-
-### Development-Only Usage
-
-It's recommended to wrap all UITestable macros in `#if DEBUG` conditions. This ensures that:
-
-1. The accessibility identifiers are only added in development and test builds
-2. The code has zero overhead in production builds
-3. No unnecessary identifiers are exposed in release versions
+It's recommended to wrap UITestable macros in `#if DEBUG` so that accessibility identifiers are only emitted in development and test builds, and aren't exposed in release versions.
 
 ## Installation
 
@@ -38,7 +25,7 @@ It's recommended to wrap all UITestable macros in `#if DEBUG` conditions. This e
 Add the following dependency to your `Package.swift` file:
 
 ```swift
-.package(url: "https://github.com/mii-chan/UITestable.git", from: "0.1.0")
+.package(url: "https://github.com/mii-chan/UITestable.git", from: "0.2.0")
 ```
 
 ### Xcode
@@ -64,15 +51,10 @@ Use the `@UITestable` macro to automatically add accessibility identifiers to bo
 
 ```swift
 struct ContentView: View {
-    var body: some View {
-        _body()
-    }
-
     #if DEBUG
     @UITestable
     #endif
-    @ViewBuilder
-    private func _body() -> some View {
+    var body: some View {
         VStack {
             Button("Login") {
                 print("Login tapped")
@@ -89,7 +71,7 @@ struct ContentView: View {
 This will expand to code similar to:
 
 ```swift
-private func _body() -> some View {
+var body: some View {
     VStack {
         Button("Login") {
             print("Login tapped")
@@ -114,15 +96,10 @@ Use the `@UITestableButton` macro when you only want to add accessibility identi
 
 ```swift
 struct LoginView: View {
-    var body: some View {
-        _body()
-    }
-
     #if DEBUG
     @UITestableButton
     #endif
-    @ViewBuilder
-    private func _body() -> some View {
+    var body: some View {
         VStack {
             Button("Login") {
                 print("Login tapped")
@@ -135,7 +112,7 @@ struct LoginView: View {
 This will expand to:
 
 ```swift
-private func _body() -> some View {
+var body: some View {
     VStack {
         Button("Login") {
             print("Login tapped")
@@ -151,15 +128,10 @@ Use the `@UITestableView` macro when you only want to add an accessibility ident
 
 ```swift
 struct ProfileView: View {
-    var body: some View {
-        _body()
-    }
-
     #if DEBUG
     @UITestableView
     #endif
-    @ViewBuilder
-    private func _body() -> some View {
+    var body: some View {
         VStack {
             Text("Profile")
             Image("avatar")
@@ -171,7 +143,7 @@ struct ProfileView: View {
 This will expand to:
 
 ```swift
-private func _body() -> some View {
+var body: some View {
     VStack {
         Text("Profile")
         Image("avatar")
@@ -191,15 +163,10 @@ When using conditional statements or other control flow structures, the macro au
 struct SettingsView: View {
     var showAdvancedSettings: Bool = false
 
-    var body: some View {
-        _body()
-    }
-
     #if DEBUG
     @UITestableView
     #endif
-    @ViewBuilder
-    private func _body() -> some View {
+    var body: some View {
         if showAdvancedSettings {
             VStack {
                 Text("Advanced Settings")
@@ -216,7 +183,7 @@ struct SettingsView: View {
 This will expand to:
 
 ```swift
-private func _body() -> some View {
+var body: some View {
     Group {
         if showAdvancedSettings {
             VStack {
@@ -266,7 +233,7 @@ The macro uses Swift's macro system to transform the view body at compile time. 
 
 ## Requirements
 
-- Swift 6.1+
+- Swift toolchain `main-snapshot-2026-05-07` or later (selected via Xcode > Toolchains)
 - iOS 16.0+ / macOS 11.0+
 
 ## License
