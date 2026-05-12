@@ -14,8 +14,7 @@ extension UITestableBaseMacro {
         providingBodyFor declaration: some DeclSyntaxProtocol & WithOptionalCodeBlockSyntax,
         in context: some MacroExpansionContext
     ) throws -> [CodeBlockItemSyntax] {
-        guard let funcDecl = declaration.as(FunctionDeclSyntax.self),
-              let body = funcDecl.body else {
+        guard let body = declaration.body else {
             return []
         }
 
