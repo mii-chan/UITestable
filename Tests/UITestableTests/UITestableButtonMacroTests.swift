@@ -19,13 +19,8 @@ final class UITestableButtonMacroTests {
         assertMacroExpansion(
             """
             struct ContentView: View {
-                var body: some View {
-                    _body()
-                }
-
                 @UITestableButton
-                @ViewBuilder
-                func _body() -> some View {
+                var body: some View {
                     Button("Button1") {
                         print("tapped Button1")
                     }
@@ -35,10 +30,6 @@ final class UITestableButtonMacroTests {
             expandedSource: """
             struct ContentView: View {
                 var body: some View {
-                    _body()
-                }
-                @ViewBuilder
-                func _body() -> some View {
                     Button("Button1") {
                                 print("tapped Button1")
                             }
@@ -52,20 +43,15 @@ final class UITestableButtonMacroTests {
         throw XCTSkip("macros are only supported when running tests for the host platform")
         #endif
     }
-    
+
     @Test
     func testMultipleButtons() throws {
         #if canImport(UITestableMacros)
         assertMacroExpansion(
             """
             struct ContentView: View {
-                var body: some View {
-                    _body()
-                }
-
                 @UITestableButton
-                @ViewBuilder
-                func _body() -> some View {
+                var body: some View {
                     VStack {
                         Button("Button1") {
                             print("tapped Button1")
@@ -81,10 +67,6 @@ final class UITestableButtonMacroTests {
             expandedSource: """
             struct ContentView: View {
                 var body: some View {
-                    _body()
-                }
-                @ViewBuilder
-                func _body() -> some View {
                     VStack {
                                 Button("Button1") {
                                     print("tapped Button1")
@@ -105,20 +87,15 @@ final class UITestableButtonMacroTests {
         throw XCTSkip("macros are only supported when running tests for the host platform")
         #endif
     }
-    
+
     @Test
     func testRespectExistingAccessibilityIdentifiers() throws {
         #if canImport(UITestableMacros)
         assertMacroExpansion(
             """
             struct ContentView: View {
-                var body: some View {
-                    _body()
-                }
-
                 @UITestableButton
-                @ViewBuilder
-                func _body() -> some View {
+                var body: some View {
                     VStack {
                         Button("Button1") {
                             print("tapped Button1")
@@ -131,10 +108,6 @@ final class UITestableButtonMacroTests {
             expandedSource: """
             struct ContentView: View {
                 var body: some View {
-                    _body()
-                }
-                @ViewBuilder
-                func _body() -> some View {
                     VStack {
                                 Button("Button1") {
                                     print("tapped Button1")
@@ -150,20 +123,15 @@ final class UITestableButtonMacroTests {
         throw XCTSkip("macros are only supported when running tests for the host platform")
         #endif
     }
-    
+
     @Test
     func testNoRootViewIdentifierApplied() throws {
         #if canImport(UITestableMacros)
         assertMacroExpansion(
             """
             struct ContentView: View {
-                var body: some View {
-                    _body()
-                }
-
                 @UITestableButton
-                @ViewBuilder
-                func _body() -> some View {
+                var body: some View {
                     VStack {
                         Text("Hello")
                     }
@@ -173,10 +141,6 @@ final class UITestableButtonMacroTests {
             expandedSource: """
             struct ContentView: View {
                 var body: some View {
-                    _body()
-                }
-                @ViewBuilder
-                func _body() -> some View {
                     VStack {
                                 Text("Hello")
                             }

@@ -19,13 +19,8 @@ final class UITestableTests {
         assertMacroExpansion(
             """
             struct ContentView: View {
-                var body: some View {
-                    _body()
-                }
-
                 @UITestable
-                @ViewBuilder
-                func _body() -> some View {
+                var body: some View {
                     VStack {
                         Button("Button1") {
                             print("tapped Button1")
@@ -41,10 +36,6 @@ final class UITestableTests {
             expandedSource: """
             struct ContentView: View {
                 var body: some View {
-                    _body()
-                }
-                @ViewBuilder
-                func _body() -> some View {
                     VStack {
                                 Button("Button1") {
                                     print("tapped Button1")
@@ -76,13 +67,8 @@ final class UITestableTests {
         assertMacroExpansion(
             """
             struct ContentView: View {
-                var body: some View {
-                    _body()
-                }
-
                 @UITestable
-                @ViewBuilder
-                func _body() -> some View {
+                var body: some View {
                     VStack {
                         Button("Button1") {
                             print("tapped Button1")
@@ -96,10 +82,6 @@ final class UITestableTests {
             expandedSource: """
             struct ContentView: View {
                 var body: some View {
-                    _body()
-                }
-                @ViewBuilder
-                func _body() -> some View {
                     VStack {
                                 Button("Button1") {
                                     print("tapped Button1")
@@ -130,13 +112,8 @@ final class UITestableTests {
             struct ContentView: View {
                 let flag: Bool = false
 
-                var body: some View {
-                    _body()
-                }
-
                 @UITestable
-                @ViewBuilder
-                func _body() -> some View {
+                var body: some View {
                     if flag {
                         VStack {
                             Button("Button1") {
@@ -156,12 +133,7 @@ final class UITestableTests {
             expandedSource: """
             struct ContentView: View {
                 let flag: Bool = false
-
                 var body: some View {
-                    _body()
-                }
-                @ViewBuilder
-                func _body() -> some View {
                     Group {
                             if flag {
                                 VStack {
@@ -199,6 +171,44 @@ final class UITestableTests {
         assertMacroExpansion(
             """
             struct ContentView: View {
+                @UITestable
+                var body: some View {
+                    VStack {
+                        Button("Button1") {
+                            print("tapped Button1")
+                        }
+                        .accessibilityIdentifier("CustomButton1")
+                    }
+                    .accessibilityIdentifier("CustomView")
+                }
+            }
+            """,
+            expandedSource: """
+            struct ContentView: View {
+                var body: some View {
+                    VStack {
+                                Button("Button1") {
+                                    print("tapped Button1")
+                                }
+                                .accessibilityIdentifier("CustomButton1")
+                            }
+                            .accessibilityIdentifier("CustomView")
+                }
+            }
+            """,
+            macros: testMacros
+        )
+        #else
+        throw XCTSkip("macros are only supported when running tests for the host platform")
+        #endif
+    }
+
+    @Test
+    func testFunctionAttachment() throws {
+        #if canImport(UITestableMacros)
+        assertMacroExpansion(
+            """
+            struct ContentView: View {
                 var body: some View {
                     _body()
                 }
@@ -210,9 +220,7 @@ final class UITestableTests {
                         Button("Button1") {
                             print("tapped Button1")
                         }
-                        .accessibilityIdentifier("CustomButton1")
                     }
-                    .accessibilityIdentifier("CustomView")
                 }
             }
             """,
@@ -227,9 +235,12 @@ final class UITestableTests {
                                 Button("Button1") {
                                     print("tapped Button1")
                                 }
-                                .accessibilityIdentifier("CustomButton1")
+                                .accessibilityIdentifier("ContentView_Button1")
                             }
-                            .accessibilityIdentifier("CustomView")
+                            .background(
+                                Color.clear
+                                    .accessibilityIdentifier("ContentView")
+                            )
                 }
             }
             """,
