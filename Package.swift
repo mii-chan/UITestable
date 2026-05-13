@@ -15,7 +15,9 @@ let package = Package(
         ),
     ],
     dependencies: [
-        .package(url: "https://github.com/swiftlang/swift-syntax.git", from: "600.0.0-latest"),
+        // Pinned to a revision that includes https://github.com/swiftlang/swift-syntax/pull/3298,
+        // which enables body macros on computed properties.
+        .package(url: "https://github.com/swiftlang/swift-syntax.git", revision: "434337950e16ec06b226fa8d8f032cfc5027e2c8")
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.

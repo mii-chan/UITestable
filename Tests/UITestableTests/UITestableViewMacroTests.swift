@@ -19,13 +19,8 @@ final class UITestableViewMacroTests {
         assertMacroExpansion(
             """
             struct ContentView: View {
-                var body: some View {
-                    _body()
-                }
-            
                 @UITestableView
-                @ViewBuilder
-                func _body() -> some View {
+                var body: some View {
                     VStack {
                         Text("title")
                     }
@@ -35,10 +30,6 @@ final class UITestableViewMacroTests {
             expandedSource: """
             struct ContentView: View {
                 var body: some View {
-                    _body()
-                }
-                @ViewBuilder
-                func _body() -> some View {
                     VStack {
                                 Text("title")
                             }
@@ -62,13 +53,8 @@ final class UITestableViewMacroTests {
         assertMacroExpansion(
             """
             struct ContentView: View {
-                var body: some View {
-                    _body()
-                }
-
                 @UITestableView
-                @ViewBuilder
-                func _body() -> some View {
+                var body: some View {
                     return VStack {
                         Text("title")
                     }
@@ -78,10 +64,6 @@ final class UITestableViewMacroTests {
             expandedSource: """
             struct ContentView: View {
                 var body: some View {
-                    _body()
-                }
-                @ViewBuilder
-                func _body() -> some View {
                     return VStack {
                                 Text("title")
                             }
@@ -107,13 +89,8 @@ final class UITestableViewMacroTests {
             struct ContentView: View {
                 let flag: Bool = false
 
-                var body: some View {
-                    _body()
-                }
-
                 @UITestableView
-                @ViewBuilder
-                func _body() -> some View {
+                var body: some View {
                     if flag {
                         VStack {
                             Text("title")
@@ -129,12 +106,7 @@ final class UITestableViewMacroTests {
             expandedSource: """
             struct ContentView: View {
                 let flag: Bool = false
-
                 var body: some View {
-                    _body()
-                }
-                @ViewBuilder
-                func _body() -> some View {
                     Group {
                             if flag {
                                 VStack {
@@ -166,13 +138,8 @@ final class UITestableViewMacroTests {
         assertMacroExpansion(
             """
             struct ContentView: View {
-                var body: some View {
-                    _body()
-                }
-
                 @UITestableView
-                @ViewBuilder
-                func _body() -> some View {
+                var body: some View {
                     VStack {
                         Button("Button1") {
                             print("tapped Button1")
@@ -184,10 +151,6 @@ final class UITestableViewMacroTests {
             expandedSource: """
             struct ContentView: View {
                 var body: some View {
-                    _body()
-                }
-                @ViewBuilder
-                func _body() -> some View {
                     VStack {
                                 Button("Button1") {
                                     print("tapped Button1")
@@ -206,20 +169,15 @@ final class UITestableViewMacroTests {
         throw XCTSkip("macros are only supported when running tests for the host platform")
         #endif
     }
-    
+
     @Test
     func testRespectExistingAccessibilityIdentifiers() throws {
         #if canImport(UITestableMacros)
         assertMacroExpansion(
             """
             struct ContentView: View {
-                var body: some View {
-                    _body()
-                }
-            
                 @UITestableView
-                @ViewBuilder
-                func body() -> some View {
+                var body: some View {
                     VStack {
                         Text("title")
                     }
@@ -231,10 +189,6 @@ final class UITestableViewMacroTests {
             expandedSource: """
             struct ContentView: View {
                 var body: some View {
-                    _body()
-                }
-                @ViewBuilder
-                func body() -> some View {
                     VStack {
                                 Text("title")
                             }
