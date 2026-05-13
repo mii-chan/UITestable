@@ -12,7 +12,8 @@ UITestable provides three macros to help with different UI testing needs:
 
 ## Toolchain Requirement
 
-Attaching body macros to a computed property (such as `var body: some View`) currently requires a Swift toolchain from the `main-snapshot-2026-05-07` snapshot or later, selected in Xcode from Xcode > Toolchains. The requirement will go away once the support lands in a stable Swift release.
+> [!IMPORTANT]
+> Attaching body macros to a computed property (such as `var body: some View`) currently requires a Swift toolchain from the `main-snapshot-2026-05-07` snapshot or later, selected in Xcode from Xcode > Toolchains. The requirement will go away once the support lands in a stable Swift release.
 
 ## Development-Only Usage
 
@@ -20,19 +21,37 @@ It's recommended to wrap UITestable macros in `#if DEBUG` so that accessibility 
 
 ## Installation
 
+> [!IMPORTANT]
+> UITestable currently pins `swift-syntax` to a specific revision (to pull in the fix that allows body macros on computed properties), so SwiftPM treats UITestable as an unstable-version package. As a result, adding UITestable with a version-based requirement (e.g. `from: "0.2.0"`) will fail with an error such as:
+>
+> ```
+> 'uitestable' is required using a stable-version but 'uitestable' depends on an unstable-version package 'swift-syntax'.
+> ```
+>
+> Until `swift-syntax` ships a tagged release containing that fix, please add UITestable using a **branch** or **commit (revision)** requirement as shown below.
+
 ### Swift Package Manager
 
-Add the following dependency to your `Package.swift` file:
+Add the following dependency to your `Package.swift` file (use `branch:` or `revision:`, not `from:`):
 
 ```swift
-.package(url: "https://github.com/mii-chan/UITestable.git", from: "0.2.0")
+// Track the latest main
+.package(url: "https://github.com/mii-chan/UITestable.git", branch: "main")
+
+// Or pin to a specific commit
+.package(url: "https://github.com/mii-chan/UITestable.git", revision: "01f7396f730b1671971756a432e8f03c8ce7ac60")
 ```
 
 ### Xcode
 
 1. In Xcode, select **File > Add Package Dependencies...**
 2. Enter the repository URL: `https://github.com/mii-chan/UITestable.git`
-3. Select the version you want to use.
+3. Open the **Dependency Rule** dropdown and choose either:
+   - **Branch** and enter `main`, or
+   - **Commit** and enter a full commit SHA.
+4. Click **Add Package**.
+
+Selecting a version-based rule will fail with the error shown above.
 
 ## Usage
 
