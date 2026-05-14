@@ -13,7 +13,7 @@ UITestable provides three macros to help with different UI testing needs:
 ## Toolchain Requirement
 
 > [!IMPORTANT]
-> Attaching body macros to a computed property (such as `var body: some View`) currently requires a Swift toolchain from the `main-snapshot-2026-05-07` snapshot or later, selected in Xcode from Xcode > Toolchains. The requirement will go away once the support lands in a stable Swift release.
+> Attaching body macros to a computed property (such as `var body: some View`) currently requires a Swift toolchain from the `main-snapshot-2026-05-04` snapshot or later, selected in Xcode from Xcode > Toolchains. The requirement will go away once the support lands in a stable Swift release.
 
 ## Development-Only Usage
 
@@ -235,7 +235,7 @@ The macro uses Swift's macro system to transform the view body at compile time. 
 
 ## Requirements
 
-- Swift toolchain `main-snapshot-2026-05-07` or later (selected via Xcode > Toolchains)
+- Swift toolchain `main-snapshot-2026-05-04` or later (selected via Xcode > Toolchains)
 - iOS 16.0+ / macOS 11.0+
 
 ## License
