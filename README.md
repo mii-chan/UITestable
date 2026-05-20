@@ -26,14 +26,14 @@ It's recommended to wrap UITestable macros in `#if DEBUG` so that accessibility 
 Add the following dependency to your `Package.swift` file:
 
 ```swift
-.package(url: "https://github.com/mii-chan/UITestable.git", from: "0.3.0")
+.package(url: "https://github.com/mii-chan/UITestable.git", from: "0.4.0")
 ```
 
 ### Xcode
 
 1. In Xcode, select **File > Add Package Dependencies...**
 2. Enter the repository URL: `https://github.com/mii-chan/UITestable.git`
-3. Choose a **Dependency Rule** (e.g. **Up to Next Major Version** with `0.3.0`).
+3. Choose a **Dependency Rule** (e.g. **Up to Next Major Version** with `0.4.0`).
 4. Click **Add Package**.
 
 ## Usage
@@ -120,6 +120,47 @@ var body: some View {
             print("Login tapped")
         }
         .accessibilityIdentifier("LoginView_Login")
+    }
+}
+```
+
+#### LocalizedStringResource
+
+`LocalizedStringResource` references — including String Catalog generated symbols and hand-written extensions on `LocalizedStringResource` — are also supported as button titles. Both the dot shorthand and the explicit form are recognized, and the generated identifier uses the symbol name:
+
+```swift
+struct LoginView: View {
+    #if DEBUG
+    @UITestableButton
+    #endif
+    var body: some View {
+        VStack {
+            Button(.login) {
+                print("Login tapped")
+            }
+
+            Button(LocalizedStringResource.register) {
+                print("Register tapped")
+            }
+        }
+    }
+}
+```
+
+This will expand to:
+
+```swift
+var body: some View {
+    VStack {
+        Button(.login) {
+            print("Login tapped")
+        }
+        .accessibilityIdentifier("LoginView_login")
+
+        Button(LocalizedStringResource.register) {
+            print("Register tapped")
+        }
+        .accessibilityIdentifier("LoginView_register")
     }
 }
 ```
@@ -229,7 +270,7 @@ class MyAppUITests: XCTestCase {
 
 The macro uses Swift's macro system to transform the view body at compile time. It:
 
-1. For buttons: Adds `.accessibilityIdentifier()` modifiers with generated IDs based on the struct name and button label
+1. For buttons: Adds `.accessibilityIdentifier()` modifiers with generated IDs based on the struct name and the button label (string literal or `LocalizedStringResource` reference)
 2. For views: Wraps the root view with a background `.accessibilityIdentifier()` that doesn't affect visual appearance
 3. For conditional views: Automatically wraps statements in a `Group` before applying the identifier
 

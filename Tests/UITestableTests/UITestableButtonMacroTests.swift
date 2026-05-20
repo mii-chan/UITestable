@@ -125,6 +125,222 @@ final class UITestableButtonMacroTests {
     }
 
     @Test
+    func testButtonWithStringCatalogSymbol() throws {
+        #if canImport(UITestableMacros)
+        assertMacroExpansion(
+            """
+            struct ContentView: View {
+                @UITestableButton
+                var body: some View {
+                    Button(.button1) {
+                        print("tapped Button1")
+                    }
+                }
+            }
+            """,
+            expandedSource: """
+            struct ContentView: View {
+                var body: some View {
+                    Button(.button1) {
+                                print("tapped Button1")
+                            }
+                            .accessibilityIdentifier("ContentView_button1")
+                }
+            }
+            """,
+            macros: testMacros
+        )
+        #else
+        throw XCTSkip("macros are only supported when running tests for the host platform")
+        #endif
+    }
+
+    @Test
+    func testButtonWithExplicitLocalizedStringResource() throws {
+        #if canImport(UITestableMacros)
+        assertMacroExpansion(
+            """
+            struct ContentView: View {
+                @UITestableButton
+                var body: some View {
+                    Button(LocalizedStringResource.button1) {
+                        print("tapped Button1")
+                    }
+                }
+            }
+            """,
+            expandedSource: """
+            struct ContentView: View {
+                var body: some View {
+                    Button(LocalizedStringResource.button1) {
+                                print("tapped Button1")
+                            }
+                            .accessibilityIdentifier("ContentView_button1")
+                }
+            }
+            """,
+            macros: testMacros
+        )
+        #else
+        throw XCTSkip("macros are only supported when running tests for the host platform")
+        #endif
+    }
+
+    @Test
+    func testMultipleButtonsWithStringCatalogSymbols() throws {
+        #if canImport(UITestableMacros)
+        assertMacroExpansion(
+            """
+            struct ContentView: View {
+                @UITestableButton
+                var body: some View {
+                    VStack {
+                        Button(.button1) {
+                            print("tapped Button1")
+                        }
+
+                        Button(LocalizedStringResource.button2) {
+                            print("tapped Button2")
+                        }
+                    }
+                }
+            }
+            """,
+            expandedSource: """
+            struct ContentView: View {
+                var body: some View {
+                    VStack {
+                                Button(.button1) {
+                                    print("tapped Button1")
+                                }
+                                .accessibilityIdentifier("ContentView_button1")
+
+                                Button(LocalizedStringResource.button2) {
+                                    print("tapped Button2")
+                                }
+                                .accessibilityIdentifier("ContentView_button2")
+                            }
+                }
+            }
+            """,
+            macros: testMacros
+        )
+        #else
+        throw XCTSkip("macros are only supported when running tests for the host platform")
+        #endif
+    }
+
+    @Test
+    func testMixedStringLiteralAndStringCatalogSymbol() throws {
+        #if canImport(UITestableMacros)
+        assertMacroExpansion(
+            """
+            struct ContentView: View {
+                @UITestableButton
+                var body: some View {
+                    VStack {
+                        Button("Button1") {
+                            print("tapped Button1")
+                        }
+
+                        Button(.button2) {
+                            print("tapped Button2")
+                        }
+                    }
+                }
+            }
+            """,
+            expandedSource: """
+            struct ContentView: View {
+                var body: some View {
+                    VStack {
+                                Button("Button1") {
+                                    print("tapped Button1")
+                                }
+                                .accessibilityIdentifier("ContentView_Button1")
+
+                                Button(.button2) {
+                                    print("tapped Button2")
+                                }
+                                .accessibilityIdentifier("ContentView_button2")
+                            }
+                }
+            }
+            """,
+            macros: testMacros
+        )
+        #else
+        throw XCTSkip("macros are only supported when running tests for the host platform")
+        #endif
+    }
+
+    @Test
+    func testButtonWithNonLocalizedStringResourceBaseIsNotIdentified() throws {
+        #if canImport(UITestableMacros)
+        assertMacroExpansion(
+            """
+            struct ContentView: View {
+                @UITestableButton
+                var body: some View {
+                    Button(MyEnum.foo) {
+                        print("tapped")
+                    }
+                }
+            }
+            """,
+            expandedSource: """
+            struct ContentView: View {
+                var body: some View {
+                    Button(MyEnum.foo) {
+                                print("tapped")
+                            }
+                }
+            }
+            """,
+            macros: testMacros
+        )
+        #else
+        throw XCTSkip("macros are only supported when running tests for the host platform")
+        #endif
+    }
+
+    @Test
+    func testStringCatalogSymbolRespectsExistingAccessibilityIdentifier() throws {
+        #if canImport(UITestableMacros)
+        assertMacroExpansion(
+            """
+            struct ContentView: View {
+                @UITestableButton
+                var body: some View {
+                    VStack {
+                        Button(.button1) {
+                            print("tapped Button1")
+                        }
+                        .accessibilityIdentifier("Button1_identifier")
+                    }
+                }
+            }
+            """,
+            expandedSource: """
+            struct ContentView: View {
+                var body: some View {
+                    VStack {
+                                Button(.button1) {
+                                    print("tapped Button1")
+                                }
+                                .accessibilityIdentifier("Button1_identifier")
+                            }
+                }
+            }
+            """,
+            macros: testMacros
+        )
+        #else
+        throw XCTSkip("macros are only supported when running tests for the host platform")
+        #endif
+    }
+
+    @Test
     func testNoRootViewIdentifierApplied() throws {
         #if canImport(UITestableMacros)
         assertMacroExpansion(

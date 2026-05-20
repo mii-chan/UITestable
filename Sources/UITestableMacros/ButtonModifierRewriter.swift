@@ -60,13 +60,25 @@ final class ButtonModifierRewriter: SyntaxRewriter {
 
     private func extractButtonLabel(from buttonCall: FunctionCallExprSyntax) -> String? {
         guard let firstArg = buttonCall.arguments.first,
-              firstArg.label == nil,
-              let str = firstArg.expression.as(StringLiteralExprSyntax.self),
-              let firstSegment = str.segments.first,
-              let stringSegment = firstSegment.as(StringSegmentSyntax.self) else {
+              firstArg.label == nil else {
             return nil
         }
 
-        return stringSegment.content.text
+        if let str = firstArg.expression.as(StringLiteralExprSyntax.self),
+           let stringSegment = str.segments.first?.as(StringSegmentSyntax.self) {
+            return stringSegment.content.text
+        }
+
+        if let member = firstArg.expression.as(MemberAccessExprSyntax.self) {
+            if member.base == nil {
+                return member.declName.baseName.text
+            }
+            if let baseRef = member.base?.as(DeclReferenceExprSyntax.self),
+               baseRef.baseName.text == "LocalizedStringResource" {
+                return member.declName.baseName.text
+            }
+        }
+
+        return nil
     }
 }
