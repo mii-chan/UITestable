@@ -15,9 +15,9 @@ let package = Package(
         ),
     ],
     dependencies: [
-        // Requires 604.0.0-prerelease-2026-03-24 or later, which includes
+        // Requires 604.0.0 or later, which includes
         // https://github.com/swiftlang/swift-syntax/pull/3298 enabling body macros on computed properties.
-        .package(url: "https://github.com/swiftlang/swift-syntax.git", from: "604.0.0-prerelease-2026-03-24")
+        .package(url: "https://github.com/swiftlang/swift-syntax.git", from: "604.0.0")
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.

@@ -12,8 +12,7 @@ UITestable provides three macros to help with different UI testing needs:
 
 ## Toolchain Requirement
 
-> [!IMPORTANT]
-> Attaching body macros to a computed property (such as `var body: some View`) currently requires a Swift toolchain from the `main-snapshot-2026-05-04` snapshot or later, selected in Xcode from Xcode > Toolchains. The requirement will go away once the support lands in a stable Swift release.
+Attaching body macros to a computed property (such as `var body: some View`) requires Swift 6.4 or later, which ships with Xcode 27.
 
 ## Development-Only Usage
 
@@ -26,14 +25,14 @@ It's recommended to wrap UITestable macros in `#if DEBUG` so that accessibility 
 Add the following dependency to your `Package.swift` file:
 
 ```swift
-.package(url: "https://github.com/mii-chan/UITestable.git", from: "0.4.0")
+.package(url: "https://github.com/mii-chan/UITestable.git", from: "0.5.0")
 ```
 
 ### Xcode
 
 1. In Xcode, select **File > Add Package Dependencies...**
 2. Enter the repository URL: `https://github.com/mii-chan/UITestable.git`
-3. Choose a **Dependency Rule** (e.g. **Up to Next Major Version** with `0.4.0`).
+3. Choose a **Dependency Rule** (e.g. **Up to Next Major Version** with `0.5.0`).
 4. Click **Add Package**.
 
 ## Usage
@@ -276,7 +275,8 @@ The macro uses Swift's macro system to transform the view body at compile time. 
 
 ## Requirements
 
-- Swift toolchain `main-snapshot-2026-05-04` or later (selected via Xcode > Toolchains)
+- Swift 6.4 or later
+- swift-syntax 604.0.0 or later
 - iOS 16.0+ / macOS 11.0+
 
 ## License
